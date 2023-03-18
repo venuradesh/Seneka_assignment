@@ -76,7 +76,7 @@ app.get("/images", (req, res) => {
   data
     .getImages()
     .then((data) => {
-      res.render("images", { images: data });
+      data.length > 0 ? res.render("images", { images: data }) : res.render("images", { message: "no results" });
     })
     .catch((err) => {
       res.render("images", { message: "no results" });
@@ -88,7 +88,7 @@ app.get("/students", (req, res) => {
     data
       .getStudentsByStatus(req.query.status)
       .then((data) => {
-        res.render("students", { students: data });
+        data.length > 0 ? res.render("students", { students: data }) : res.render("students", { message: "no results" });
       })
       .catch((err) => {
         res.render("students", { message: "no results" });
@@ -97,7 +97,7 @@ app.get("/students", (req, res) => {
     data
       .getStudentsByProgramCode(req.query.program)
       .then((data) => {
-        res.render("students", { students: data });
+        data.length > 0 ? res.render("students", { students: data }) : res.render("students", { message: "no results" });
       })
       .catch((err) => {
         res.render("students", { message: "no results" });
@@ -106,7 +106,7 @@ app.get("/students", (req, res) => {
     data
       .getStudentsByExpectedCredential(req.query.credential)
       .then((data) => {
-        res.render("students", { students: data });
+        data.length > 0 ? res.render("students", { students: data }) : res.render("students", { message: "no results" });
       })
       .catch((err) => {
         res.render("students", { message: "no results" });
@@ -115,7 +115,7 @@ app.get("/students", (req, res) => {
     data
       .getAllStudents()
       .then((data) => {
-        res.render("students", { students: data });
+        data.length > 0 ? res.render("students", { students: data }) : res.render("students", { message: "no results" });
       })
       .catch((err) => {
         res.render("students", { message: "no results" });
@@ -127,7 +127,7 @@ app.get("/student/:studentId", (req, res) => {
   data
     .getStudentById(req.params.studentId)
     .then((data) => {
-      res.render("student", { student: data });
+      data.length > 0 ? res.render("students", { students: data }) : res.render("students", { message: "no results" });
     })
     .catch((err) => {
       res.render("student", { message: "no results" });
@@ -141,9 +141,14 @@ app.get("/intlstudents", (req, res) => {
 });
 
 app.get("/programs", (req, res) => {
-  data.getPrograms().then((data) => {
-    res.render("programs", { programs: data });
-  });
+  data
+    .getPrograms()
+    .then((data) => {
+      data.length > 0 ? res.render("programs", { programs: data }) : res.render("programs", { message: "no results" });
+    })
+    .catch((err) => {
+      res.render("programs", { message: "no results" });
+    });
 });
 
 app.post("/students/add", (req, res) => {
