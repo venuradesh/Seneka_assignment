@@ -57,11 +57,16 @@ const Program = sequelize.define("Program", {
 Program.hasMany(Student, { foreignKey: "program" }); //ensures that the Student got a foreign key called program that deals with Program table
 
 module.exports.initialize = function () {
-  const sync = sequelize.sync();
+  let error, sync;
+  try {
+    sync = sequelize.sync();
+  } catch (e) {
+    error = e;
+  }
 
-  console.log("sync successfull");
   return new Promise((resolve, reject) => {
-    console.log(sync);
+    if (!error) resolve(sync);
+    else reject("Unable to sync the database");
   });
 };
 
@@ -71,9 +76,16 @@ module.exports.addStudent = function (studentData) {
   });
 };
 
-module.exports.getAllStudents = function () {
+module.exports.getAllStudents = async function () {
+  let students, error;
+  try {
+    students = await Student.findAll();
+  } catch (e) {
+    error = e;
+  }
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) resolve(students);
+    else reject("no results returned");
   });
 };
 
