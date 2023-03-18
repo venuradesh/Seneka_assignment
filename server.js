@@ -72,6 +72,10 @@ app.get("/students/add", (req, res) => {
   res.render("addStudent");
 });
 
+app.get("/programs/add", (req, res) => {
+  res.render("addProgram");
+});
+
 app.get("/images", (req, res) => {
   data
     .getImages()
@@ -148,6 +152,40 @@ app.get("/programs", (req, res) => {
     })
     .catch((err) => {
       res.render("programs", { message: "no results" });
+    });
+});
+
+app.post("/programs/add", (req, res) => {
+  data.addProgram(req.body).then(() => {
+    res.redirect("/programs");
+  });
+});
+
+app.post("/programs/update", (req, res) => {
+  data.updateProgram(req.body).then(() => {
+    res.redirect("/programs");
+  });
+});
+
+app.get("/program/:programCode", (req, res) => {
+  data
+    .getProgramByCode(req.params.programCode)
+    .then((data) => {
+      data.length > 0 ? res.render("program", { program: data }) : res.status(404).send("Program Not Found");
+    })
+    .catch((err) => {
+      res.status(404).send("Program Not Found");
+    });
+});
+
+app.get("/program/delete/:programCode", (req, res) => {
+  data
+    .deleteProgramByCode(req.params.programCode)
+    .then(() => {
+      res.redirect("/programs");
+    })
+    .catch((err) => {
+      res.status(500).send("Unable to remove Program/Program Not Found");
     });
 });
 
