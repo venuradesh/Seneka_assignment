@@ -153,6 +153,19 @@ app.post("/students/add", (req, res) => {
 });
 
 app.post("/images/add", upload.single("imageFile"), (req, res) => {
+  function processForm(imageUrl) {
+    console.log(imageUrl);
+    // TODO: Process the image url on Cloudinary before redirecting to /images
+    data
+      .addImage(imageUrl)
+      .then((img) => {
+        res.redirect("/images");
+      })
+      .catch((err) => {
+        res.status(500).send(err);
+      });
+  }
+
   if (req.file) {
     let streamUpload = (req) => {
       return new Promise((resolve, reject) => {
@@ -169,27 +182,20 @@ app.post("/images/add", upload.single("imageFile"), (req, res) => {
     };
 
     async function upload(req) {
-      let result = await streamUpload(req);
-      return result;
+      try {
+        let result = await streamUpload(req);
+        return result;
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     upload(req).then((uploaded) => {
+      //   console.log(uploaded);
       processForm(uploaded.url);
     });
   } else {
     processForm("");
-  }
-
-  function processForm(imageUrl) {
-    // TODO: Process the image url on Cloudinary before redirecting to /images
-    data
-      .addImage(imageUrl)
-      .then((img) => {
-        res.redirect("/images");
-      })
-      .catch((err) => {
-        res.status(500).send(err);
-      });
   }
 });
 

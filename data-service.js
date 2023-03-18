@@ -200,7 +200,7 @@ module.exports.getInternationalStudents = function () {
 module.exports.getPrograms = async function () {
   let programs, error;
   try {
-    programs = await Program.findAll({});
+    programs = await Program.findAll();
   } catch (e) {
     error = e;
   }
@@ -211,14 +211,34 @@ module.exports.getPrograms = async function () {
   });
 };
 
-module.exports.addImage = function (imageUrl) {
+module.exports.addImage = async function (imageData) {
+  let image, error;
+
+  try {
+    image = await Image.create(imageData);
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(image);
+    else {
+      return reject("unable to create image");
+    }
   });
 };
 
-module.exports.getImages = function () {
+module.exports.getImages = async function () {
+  let images, error;
+
+  try {
+    images = await Image.findAll();
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(images);
+    else return reject("no results returned");
   });
 };
