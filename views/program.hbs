@@ -1,0 +1,32 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <h2>{{program.programName}} – Program Code: {{program.programCode}}</h2>
+
+    <br />
+
+    <form method="post" action="/programs/update">
+      <hr />
+      <fieldset>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="programCode">Program Code</label>
+              <input readonly class="form-control" id="programCode" name="programCode" type="text" value="{{program.programCode}}" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="programName">Program Name</label>
+              <input class="form-control" id="programName" name="programName" type="text" value="{{program.programName}}" />
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <hr />
+      <input type="submit" class="btn btn-primary pull-right" value="Update Program" /><br /><br /><br />
+    </form>
+  </div>
+</div>
