@@ -70,9 +70,25 @@ module.exports.initialize = function () {
   });
 };
 
-module.exports.addStudent = function (studentData) {
+module.exports.addStudent = async function (studentData) {
+  let student, error;
+  studentData.isInternationalStudent = studentData.isInternationalStudent ? true : false;
+
+  for (const property in studentData) {
+    studentData[property] = studentData[property] === "" ? null : studentData[property];
+  }
+
+  try {
+    student = await Student.create(studentData);
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(student);
+    else {
+      return reject("unable to create student");
+    }
   });
 };
 
@@ -84,38 +100,94 @@ module.exports.getAllStudents = async function () {
     error = e;
   }
   return new Promise((resolve, reject) => {
-    if (!error) resolve(students);
-    else reject("no results returned");
+    if (!error) return resolve(students);
+    else return reject("no results returned");
   });
 };
 
-module.exports.getStudentById = function (id) {
+module.exports.getStudentById = async function (id) {
+  let students, error;
+  try {
+    students = await Student.findAll({
+      studentId: id,
+    });
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(students);
+    else return reject("no results returned");
   });
 };
 
-module.exports.updateStudent = function (studentData) {
+module.exports.updateStudent = async function (studentData) {
+  let error, student;
+  studentData.isInternationalStudent = studentData.isInternationalStudent ? true : false;
+
+  for (const property in studentData) {
+    studentData[property] = studentData[property] === "" ? null : studentData[property];
+  }
+
+  try {
+    student = await Student.update(studentData);
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(student);
+    else return reject("unable to update student");
   });
 };
 
-module.exports.getStudentsByStatus = function (status) {
+module.exports.getStudentsByStatus = async function (status) {
+  let students, error;
+  try {
+    students = await Student.findAll({
+      where: {
+        status: status,
+      },
+    });
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(students);
+    else return reject("no results returned");
   });
 };
 
-module.exports.getStudentsByProgramCode = function (program) {
+module.exports.getStudentsByProgramCode = async function (program) {
+  let students, error;
+  try {
+    students = await Student.findAll({
+      program: program,
+    });
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(students);
+    else return reject("no results returned");
   });
 };
 
-module.exports.getStudentsByExpectedCredential = function (credential) {
+module.exports.getStudentsByExpectedCredential = async function (credential) {
+  let students, error;
+  try {
+    students = await Student.findAll({
+      expectedCredentials: credential,
+    });
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(students);
+    else return reject("no results returned");
   });
 };
 
@@ -125,9 +197,17 @@ module.exports.getInternationalStudents = function () {
   });
 };
 
-module.exports.getPrograms = function () {
+module.exports.getPrograms = async function () {
+  let programs, error;
+  try {
+    programs = await Program.findAll({});
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(programs);
+    else return reject("no results returned");
   });
 };
 
