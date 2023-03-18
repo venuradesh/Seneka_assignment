@@ -242,3 +242,76 @@ module.exports.getImages = async function () {
     else return reject("no results returned");
   });
 };
+
+module.exports.addProgram = async (programData) => {
+  let programs, error;
+  for (property in programData) {
+    programData[property] = programData[property] !== "" ? programData[property] : null;
+  }
+
+  try {
+    programs = await Program.create(programData);
+  } catch (e) {
+    error = e;
+  }
+
+  return new Promise((resolve, reject) => {
+    if (!error) resolve(programs);
+    else reject("unable to create program");
+  });
+};
+
+module.exports.updateProgram = async (programData) => {
+  let program, error;
+
+  for (property in programData) {
+    programData[property] = programData[property] !== "" ? programData[property] : null;
+  }
+
+  try {
+    program = await Program.update(programData);
+  } catch (e) {
+    error = e;
+  }
+
+  return new Promise((resolve, reject) => {
+    if (!error) resolve(program);
+    else reject("unable to update program");
+  });
+};
+
+module.exports.getProgramByCode = async (pcode) => {
+  let program, error;
+
+  try {
+    program = await Program.findAll({
+      programCode: pcode,
+    });
+  } catch (e) {
+    error = e;
+  }
+
+  return new Promise((resolve, reject) => {
+    if (!error) resolve(program);
+    else reject("no results returned");
+  });
+};
+
+module.exports.deleteProgramByCode = async (pcode) => {
+  let error;
+
+  try {
+    await Program.destroy({
+      where: {
+        programCode: pcode,
+      },
+    });
+  } catch (e) {
+    e = error;
+  }
+
+  return new Promise((resolve, reject) => {
+    if (!error) resolve("destroyed");
+    else reject("was rejected");
+  });
+};
