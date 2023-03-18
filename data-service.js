@@ -269,14 +269,21 @@ module.exports.updateProgram = async (programData) => {
   }
 
   try {
-    program = await Program.update(programData);
+    program = await Program.update(programData, {
+      where: {
+        programCode: programData.programCode,
+      },
+    });
   } catch (e) {
     error = e;
   }
 
   return new Promise((resolve, reject) => {
     if (!error) resolve(program);
-    else reject("unable to update program");
+    else {
+      console.log(error);
+      reject("unable to update program");
+    }
   });
 };
 
@@ -301,6 +308,7 @@ module.exports.deleteProgramByCode = async (pcode) => {
   let error;
 
   try {
+    console.log(pcode);
     await Program.destroy({
       where: {
         programCode: pcode,

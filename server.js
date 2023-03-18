@@ -6,8 +6,9 @@ const fs = require("fs");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
-
+const Handlebars = require("handlebars");
 const exphbs = require("express-handlebars");
+const { allowInsecurePrototypeAccess } = require("@handlebars/allow-prototype-access");
 
 const app = express();
 const HTTP_PORT = process.env.PORT || 8080;
@@ -24,6 +25,7 @@ app.engine(
   exphbs.engine({
     extname: ".hbs",
     defaultLayout: "main",
+    handlebars: allowInsecurePrototypeAccess(Handlebars),
     helpers: {
       navLink: function (url, options) {
         return "<li" + (url == app.locals.activeRoute ? ' class="active" ' : "") + '><a href="' + url + '">' + options.fn(this) + "</a></li>";
@@ -156,22 +158,33 @@ app.get("/programs", (req, res) => {
 });
 
 app.post("/programs/add", (req, res) => {
-  data.addProgram(req.body).then(() => {
-    res.redirect("/programs");
-  });
+  data
+    .addProgram(req.body)
+    .then(() => {
+      res.redirect("/programs");
+    })
+    .catch((err) => {
+      res.status(500).send("Error when adding");
+    });
 });
 
 app.post("/programs/update", (req, res) => {
-  data.updateProgram(req.body).then(() => {
-    res.redirect("/programs");
-  });
+  data
+    .updateProgram(req.body)
+    .then(() => {
+      res.redirect("/programs");
+    })
+    .catch((err) => {
+      res.status(500).send("Unable to update");
+    });
 });
 
 app.get("/program/:programCode", (req, res) => {
   data
     .getProgramByCode(req.params.programCode)
     .then((data) => {
-      data.length > 0 ? res.render("program", { program: data }) : res.status(404).send("Program Not Found");
+      console.log(data[0].dataValues);
+      data.length > 0 ? res.render("program", { program: data[0].dataValues }) : res.status(404).send("Program Not Found");
     })
     .catch((err) => {
       res.status(404).send("Program Not Found");
