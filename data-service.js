@@ -57,53 +57,137 @@ const Program = sequelize.define("Program", {
 Program.hasMany(Student, { foreignKey: "program" }); //ensures that the Student got a foreign key called program that deals with Program table
 
 module.exports.initialize = function () {
-  const sync = sequelize.sync();
+  let error, sync;
+  try {
+    sync = sequelize.sync();
+  } catch (e) {
+    error = e;
+  }
 
-  console.log("sync successfull");
   return new Promise((resolve, reject) => {
-    console.log(sync);
+    if (!error) resolve(sync);
+    else reject("Unable to sync the database");
   });
 };
 
-module.exports.addStudent = function (studentData) {
+module.exports.addStudent = async function (studentData) {
+  let student, error;
+  studentData.isInternationalStudent = studentData.isInternationalStudent ? true : false;
+
+  for (const property in studentData) {
+    studentData[property] = studentData[property] === "" ? null : studentData[property];
+  }
+
+  try {
+    student = await Student.create(studentData);
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(student);
+    else {
+      return reject("unable to create student");
+    }
   });
 };
 
-module.exports.getAllStudents = function () {
+module.exports.getAllStudents = async function () {
+  let students, error;
+  try {
+    students = await Student.findAll();
+  } catch (e) {
+    error = e;
+  }
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(students);
+    else return reject("no results returned");
   });
 };
 
-module.exports.getStudentById = function (id) {
+module.exports.getStudentById = async function (id) {
+  let students, error;
+  try {
+    students = await Student.findAll({
+      studentId: id,
+    });
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(students);
+    else return reject("no results returned");
   });
 };
 
-module.exports.updateStudent = function (studentData) {
+module.exports.updateStudent = async function (studentData) {
+  let error, student;
+  studentData.isInternationalStudent = studentData.isInternationalStudent ? true : false;
+
+  for (const property in studentData) {
+    studentData[property] = studentData[property] === "" ? null : studentData[property];
+  }
+
+  try {
+    student = await Student.update(studentData);
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(student);
+    else return reject("unable to update student");
   });
 };
 
-module.exports.getStudentsByStatus = function (status) {
+module.exports.getStudentsByStatus = async function (status) {
+  let students, error;
+  try {
+    students = await Student.findAll({
+      where: {
+        status: status,
+      },
+    });
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(students);
+    else return reject("no results returned");
   });
 };
 
-module.exports.getStudentsByProgramCode = function (program) {
+module.exports.getStudentsByProgramCode = async function (program) {
+  let students, error;
+  try {
+    students = await Student.findAll({
+      program: program,
+    });
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(students);
+    else return reject("no results returned");
   });
 };
 
-module.exports.getStudentsByExpectedCredential = function (credential) {
+module.exports.getStudentsByExpectedCredential = async function (credential) {
+  let students, error;
+  try {
+    students = await Student.findAll({
+      expectedCredentials: credential,
+    });
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(students);
+    else return reject("no results returned");
   });
 };
 
@@ -113,20 +197,48 @@ module.exports.getInternationalStudents = function () {
   });
 };
 
-module.exports.getPrograms = function () {
+module.exports.getPrograms = async function () {
+  let programs, error;
+  try {
+    programs = await Program.findAll();
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(programs);
+    else return reject("no results returned");
   });
 };
 
-module.exports.addImage = function (imageUrl) {
+module.exports.addImage = async function (imageData) {
+  let image, error;
+
+  try {
+    image = await Image.create(imageData);
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(image);
+    else {
+      return reject("unable to create image");
+    }
   });
 };
 
-module.exports.getImages = function () {
+module.exports.getImages = async function () {
+  let images, error;
+
+  try {
+    images = await Image.findAll();
+  } catch (e) {
+    error = e;
+  }
+
   return new Promise((resolve, reject) => {
-    reject();
+    if (!error) return resolve(images);
+    else return reject("no results returned");
   });
 };
