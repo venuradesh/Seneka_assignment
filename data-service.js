@@ -41,7 +41,7 @@ const Image = sequelize.define("Image", {
   height: Sequlize.INTEGER,
   format: Sequlize.STRING,
   resourceType: Sequlize.STRING,
-  updatedAt: Sequlize.DATE,
+  uploadedAt: Sequlize.DATE,
   originalFileName: Sequlize.STRING,
   mimeType: Sequlize.STRING,
 });
@@ -246,6 +246,7 @@ module.exports.addImage = async function (imageData) {
     image = await Image.create(imageData);
   } catch (e) {
     error = e;
+    console.log(e);
   }
 
   return new Promise((resolve, reject) => {
