@@ -5,7 +5,22 @@
   </div>
   {{#each images}}
     <div class="col-md-4">
-      <img src="{{this}}" class="img-responsive img-thumbnail" />
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img src="{{imageUrl}}" class="img-responsive img-thumbnail" />
+          <p>Image MetaData:</p>
+          <ul>
+            <li><strong> ID:</strong> {{imageId}}</li>
+            <li><strong>Version:</strong> {{version}}</li>
+            <li><strong>Width:</strong> {{width}}</li>
+            <li><strong>Height:</strong> {{height}}</li>
+            <li><strong>Format:</strong> {{format}}</li>
+            <li><strong>Uploaded at:</strong> {{uploadedAt}}</li>
+            <li><strong>Original File Name:</strong> {{originalFileName}}</li>
+            <li><strong>MIME Type:</strong> {{mimeType}}</li>
+          </ul>
+        </div>
+      </div>
     </div>
   {{else}}
     <div class="col-md-12 text-center">

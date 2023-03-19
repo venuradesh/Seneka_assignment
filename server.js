@@ -174,9 +174,14 @@ app.get("/student/:studentId", (req, res) => {
 });
 
 app.get("/intlstudents", (req, res) => {
-  data.getInternationalStudents().then((data) => {
-    res.json(data);
-  });
+  data
+    .getInternationalStudents()
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      res.status(500).send("Unable to Get International Students");
+    });
 });
 
 app.get("/programs", (req, res) => {
@@ -236,9 +241,14 @@ app.get("/program/delete/:programCode", (req, res) => {
 });
 
 app.post("/students/add", (req, res) => {
-  data.addStudent(req.body).then(() => {
-    res.redirect("/students");
-  });
+  data
+    .addStudent(req.body)
+    .then(() => {
+      res.redirect("/students");
+    })
+    .catch((err) => {
+      res.status(500).send("Unable to add Student");
+    });
 });
 
 app.post("/images/add", upload.single("imageFile"), (req, res) => {
