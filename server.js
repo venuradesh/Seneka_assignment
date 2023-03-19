@@ -288,6 +288,18 @@ app.post("/images/add", upload.single("imageFile"), (req, res) => {
   }
 });
 
+app.get("/students/delete/:studentId", (req, res) => {
+  console.log("within");
+  data
+    .deleteStudentById(req.params.studentId)
+    .then(() => {
+      res.redirect("/students");
+    })
+    .catch((err) => {
+      res.status(500).send("Unable to Remove Student / Student not found");
+    });
+});
+
 app.post("/student/update", (req, res) => {
   data
     .updateStudent(req.body)

@@ -205,6 +205,26 @@ module.exports.getInternationalStudents = function () {
   });
 };
 
+module.exports.deleteStudentById = async (id) => {
+  let error;
+
+  try {
+    console.log("within");
+    await Student.destroy({
+      where: {
+        studentId: id,
+      },
+    });
+  } catch (e) {
+    error = e;
+  }
+
+  return new Promise((resolve, reject) => {
+    if (!error) resolve("destroyed");
+    else reject("was rejected");
+  });
+};
+
 module.exports.getPrograms = async function () {
   let programs, error;
   try {
