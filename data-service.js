@@ -12,7 +12,7 @@ const sequelize = new Sequlize("badholmr", "badholmr", "KYGR3A_lTQDYduAk0Y6Oyrel
 
 const Student = sequelize.define("Student", {
   studentId: {
-    type: Sequlize.STRING,
+    type: Sequlize.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
@@ -109,7 +109,9 @@ module.exports.getStudentById = async function (id) {
   let students, error;
   try {
     students = await Student.findAll({
-      studentId: id,
+      where: {
+        studentId: parseInt(id),
+      },
     });
   } catch (e) {
     error = e;
@@ -130,14 +132,20 @@ module.exports.updateStudent = async function (studentData) {
   }
 
   try {
-    student = await Student.update(studentData);
+    console.log(studentData);
+    student = await Student.update(studentData, {
+      where: {
+        studentId: parseInt(studentData.studentId),
+      },
+    });
   } catch (e) {
+    console.log(e);
     error = e;
   }
 
   return new Promise((resolve, reject) => {
-    if (!error) return resolve(student);
-    else return reject("unable to update student");
+    if (!error) resolve(student);
+    else reject("unable to update student");
   });
 };
 
@@ -154,8 +162,8 @@ module.exports.getStudentsByStatus = async function (status) {
   }
 
   return new Promise((resolve, reject) => {
-    if (!error) return resolve(students);
-    else return reject("no results returned");
+    if (!error) resolve(students);
+    else reject("no results returned");
   });
 };
 
@@ -280,10 +288,7 @@ module.exports.updateProgram = async (programData) => {
 
   return new Promise((resolve, reject) => {
     if (!error) resolve(program);
-    else {
-      console.log(error);
-      reject("unable to update program");
-    }
+    else reject("unable to update program");
   });
 };
 
