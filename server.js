@@ -71,7 +71,12 @@ app.get("/images/add", (req, res) => {
 });
 
 app.get("/students/add", (req, res) => {
-  res.render("addStudent");
+  data
+    .getPrograms()
+    .then((data) => {
+      res.render("addStudent", { programs: data });
+    })
+    .catch((err) => res.render("addStudent", { programs: [] }));
 });
 
 app.get("/programs/add", (req, res) => {
@@ -130,13 +135,41 @@ app.get("/students", (req, res) => {
 });
 
 app.get("/student/:studentId", (req, res) => {
+  let viewData = {};
+
   data
     .getStudentById(req.params.studentId)
     .then((data) => {
-      data.length > 0 ? res.render("students", { students: data }) : res.render("students", { message: "no results" });
+      if (data) {
+        viewData.student = data[0];
+      } else {
+        viewData.student = null;
+      }
     })
     .catch((err) => {
-      res.render("student", { message: "no results" });
+      viewData.student = null;
+    })
+    .then(() => data.getPrograms())
+    .then((data) => {
+      viewData.programs = data;
+      for (let i = 0; i < viewData.programs.length; i++) {
+        if (viewData.programs[i].programCode == viewData.student.program) {
+          viewData.programs[i].selected = true;
+        }
+      }
+    })
+    .catch(() => {
+      viewData.programs = [];
+    })
+    .then(() => {
+      if (viewData.student == null) {
+        res.status(404).send("Student Not Found");
+      } else {
+        res.render("student", { viewData: viewData });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send("Unable to Show Students");
     });
 });
 
@@ -256,9 +289,14 @@ app.post("/images/add", upload.single("imageFile"), (req, res) => {
 });
 
 app.post("/student/update", (req, res) => {
-  data.updateStudent(req.body).then(() => {
-    res.redirect("/students");
-  });
+  data
+    .updateStudent(req.body)
+    .then(() => {
+      res.redirect("/students");
+    })
+    .catch((err) => {
+      res.status(501).send("unable to update");
+    });
 });
 
 app.use((req, res) => {
