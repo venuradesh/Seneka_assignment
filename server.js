@@ -14,9 +14,9 @@ const app = express();
 const HTTP_PORT = process.env.PORT || 8080;
 
 cloudinary.config({
-  cloud_name: "Cloud Name",
-  api_key: "API Key",
-  api_secret: "API Secret",
+  cloud_name: "djuaaifvl",
+  api_key: "347159416534861",
+  api_secret: "DKKBatoiLGDdZ4uOHHA966F4cqY",
   secure: true,
 });
 
@@ -242,11 +242,22 @@ app.post("/students/add", (req, res) => {
 });
 
 app.post("/images/add", upload.single("imageFile"), (req, res) => {
-  function processForm(imageUrl) {
-    console.log(imageUrl);
+  function processForm(uploaded) {
+    const imageData = {
+      imageId: uploaded.public_id,
+      imageUrl: uploaded.url,
+      version: uploaded.version,
+      width: uploaded.width,
+      height: uploaded.height,
+      format: uploaded.format,
+      resourceType: uploaded.resource_type,
+      uploadedAt: uploaded.created_at,
+      originalFileName: req.file.originalname,
+      mimeType: req.file.mimetype,
+    };
     // TODO: Process the image url on Cloudinary before redirecting to /images
     data
-      .addImage(imageUrl)
+      .addImage(imageData)
       .then((img) => {
         res.redirect("/images");
       })
@@ -280,8 +291,7 @@ app.post("/images/add", upload.single("imageFile"), (req, res) => {
     }
 
     upload(req).then((uploaded) => {
-      //   console.log(uploaded);
-      processForm(uploaded.url);
+      processForm(uploaded);
     });
   } else {
     processForm("");
@@ -315,6 +325,7 @@ app.use((req, res) => {
   res.status(404).send("Page Not Found");
 });
 
+//initialize the server
 data
   .initialize()
   .then(function () {
